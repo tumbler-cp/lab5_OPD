@@ -1,0 +1,46 @@
+ORG	0x58D
+addr:	WORD	0x5F3
+count:	WORD	0
+counter:	WORD	0
+i:	WORD	0
+buff:	WORD	0
+START:	CLA
+	ST	count
+	ST	counter
+	ST	i
+SIZE:	IN	5
+	AND	#0x40
+	BEQ	SIZE
+	IN	4
+	ST	(addr)+
+	INC
+	ST	count
+	LD	addr
+	ST	i
+	DEC
+	ST	addr
+TYPE:	LOOP	count
+	JUMP	F
+	JUMP	EXIT
+F:	IN	5
+	AND	#0x40
+	BEQ	F
+	IN	4
+	ST	buff
+	LD	counter
+	INC
+	ST	counter
+	ROR
+	BCS	ODD
+	BCC	EVEN
+ODD:	LD	buff
+	ST	(i)
+	CLA
+	JUMP	TYPE
+EVEN:	LD	buff
+	SWAB
+	OR	(i)
+	ST	(i)+
+	CLA
+	JUMP	TYPE
+EXIT:	HLT
